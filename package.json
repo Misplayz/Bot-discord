@@ -1,0 +1,21 @@
+{
+  "name": "discordjs",
+  "version": "1.0.0",
+  "description": "Miku_Family",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "jaizacode",
+  "license": "MIT",
+  "keywords": [],
+  "dependencies": {
+    "@discordjs/builders": "^1.7.0",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.16.1",
+    "discord.js": "^14.14.1",
+    "ffmpeg": "^0.0.4",
+    "ytdl-core": "^4.11.5"
+  }
+}
