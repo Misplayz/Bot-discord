@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const keep_alive = require('./keep_alive.js')
+const dotenv = require('dotenv');
+dotenv.config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
