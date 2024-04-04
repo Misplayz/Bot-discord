@@ -1,14 +1,27 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, StreamType } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, StreamType, VoiceConnectionStatus } = require('@discordjs/voice');
+const { Spotify } = require('spotify');
+
+const spotifyClient = new Spotify({
+    clientId: process.env.spotify_clientId,
+    clientSecret: process.env.spotify_client_secret,
+});
+
+const songQueue = [];
+
+let startTime;
+
+let botConnected = false;
+
+let connection;
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('Play a YouTube video in your voice channel')
+        .setDescription('Play a song in your voice channel')
         .addStringOption(option =>
             option.setName('query')
-                .setDescription('YouTube video link or search query')
+                .setDescription('Song name or link from a supported streaming service')
                 .setRequired(true)
         ),
     async execute(interaction) {
@@ -22,23 +35,19 @@ module.exports = {
 
         const query = interaction.options.getString('query');
 
-        const urlRegex = /^(http(s)?:\/\/)?((www\.youtube\.com|m\.youtube\.com)\/.+|youtu\.be\/.+)/;
-
-        // Check if the query is a valid YouTube URL
-        if (!urlRegex.test(query)) {
-            return interaction.reply('Please provide a valid YouTube video URL.');
-        }
-
         try {
-            const stream = await ytdl(query, { filter: 'audioonly' });
-            if (!stream) {
-                throw new Error('Unable to fetch the audio stream from the provided URL.');
+            let audioUrl;
+
+            if (query.includes('spotify')) {
+                audioUrl = await getSpotifyAudioUrl(query);
+            } else {
+                return interaction.reply('The provided link is not supported or invalid.');
             }
 
-            const resource = createAudioResource(stream, { inputType: StreamType.Opus });
+            const resource = createAudioResource(audioUrl, { inputType: StreamType.Arbitrary });
             player.play(resource);
 
-            const connection = joinVoiceChannel({
+            connection = joinVoiceChannel({
                 channelId: voiceChannel.id,
                 guildId: voiceChannel.guild.id,
                 adapterCreator: voiceChannel.guild.voiceAdapterCreator,
@@ -46,9 +55,34 @@ module.exports = {
 
             connection.subscribe(player);
             await interaction.reply(`Now playing: ${query}`);
+
+
+            startTime = Date.now();
+
+
+            songQueue.push(query);
+
+
+            botConnected = true;
         } catch (error) {
-            console.error('Error playing YouTube video:', error);
-            await interaction.reply('An error occurred while trying to play the YouTube video. Please make sure the input is valid.');
+            console.error('Error playing the song:', error);
+            await interaction.reply('An error occurred while trying to play the song. Please make sure the input is valid.');
         }
     },
 };
+
+async function getSpotifyAudioUrl(query) {
+    try {
+        const trackId = parseQuery(query);
+        const audioUrl = await spotifyClient.getAudioUrl(trackId);
+        return audioUrl;
+    } catch (error) {
+        console.error('Error fetching audio URL from Spotify:', error);
+        throw new Error('Error fetching audio URL from Spotify');
+    }
+}
+
+function parseQuery(query) {
+
+}
+
