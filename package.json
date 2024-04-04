@@ -14,8 +14,8 @@
     "@discordjs/builders": "^1.7.0",
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.16.1",
+    "axios": "^1.6.7",
     "discord.js": "^14.14.1",
-    "ffmpeg": "^0.0.4",
-    "ytdl-core": "^4.11.5"
+    "spotify": "^0.3.0"
   }
 }
