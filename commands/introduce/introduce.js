@@ -19,10 +19,10 @@ module.exports = {
 
     async execute(interaction) {
         // ตรวจสอบว่าบอทอยู่ในห้องที่ต้องการหรือไม่
-        //     if (interaction.channel.name !== 'ชื่อห้องที่ต้องการ') {
-        //         await interaction.reply({ content: 'ไม่สามารถใช้คำสั่งนี้ในห้องนี้ได้', ephemeral: true });
-        //         return;
-        //     }
+            if (interaction.channel.name !== '👤-introduce') {
+                await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
+                    return;
+                 }
             
             const userNickname = interaction.options.getString('nickname');
             const userAge = interaction.options.getString('age');
@@ -55,6 +55,7 @@ module.exports = {
                     { name: 'Age', value: userAge},
                     { name: 'Gender', value: userGender}
                 )
+                .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // แก้ไขที่นี่
                 .setTimestamp();
                 
             // ส่งข้อความและ Embed พร้อมกัน
@@ -69,7 +70,7 @@ module.exports = {
                 const messageContent = `${taggedUser}`;
                 const indEmbed = new EmbedBuilder()
                     .setTitle(`Introduce by ${interaction.user.tag} has been confirmed.`)
-                    .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
+                    .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // แก้ไขที่นี่
                     .setColor('#00FFFF')
                     .addFields(
                         { name: 'Nickname', value: userNickname},
@@ -87,9 +88,9 @@ module.exports = {
                     // เพิ่มบทบาทใหม่และลบบทบาทเก่า
                     const member = await interaction.guild.members.fetch(interaction.user);
                     const newRole = interaction.guild.roles.cache.find(role => role.name === 'Introduce');
-                    const oldRole = interaction.guild.roles.cache.find(role => role.name === 'OLD_ROLE_NAME');
+                    //const oldRole = interaction.guild.roles.cache.find(role => role.name === 'OLD_ROLE_NAME');
                     if (newRole) await member.roles.add(newRole);
-                    if (oldRole) await member.roles.remove(oldRole);
+                    //if (oldRole) await member.roles.remove(oldRole);
                 } else {
                     console.log('Target channel not found.');
                 }
