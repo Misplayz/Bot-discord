@@ -87,7 +87,7 @@ module.exports = {
 
                     // เพิ่มบทบาทใหม่และลบบทบาทเก่า
                     const member = await interaction.guild.members.fetch(interaction.user);
-                    const newRole = interaction.guild.roles.cache.find(role => role.name === 'FamilyMember');
+                    const newRole = interaction.guild.roles.cache.find(role => role.name === 'Family-Member');
                     //const oldRole = interaction.guild.roles.cache.find(role => role.name === 'OLD_ROLE_NAME');
                     if (newRole) await member.roles.add(newRole);
                     //if (oldRole) await member.roles.remove(oldRole);
