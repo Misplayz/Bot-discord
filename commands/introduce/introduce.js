@@ -1,4 +1,21 @@
-const { MessageEmbed } = require('discord.js');
+const { Client, MessageEmbed, SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('introduce')
+        .setDescription('Allows a user to introduce themselves.')
+        .addStringOption(option =>
+            option.setName('nickname')
+                .setDescription('Enter your nickname')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('age')
+                .setDescription('Enter your age')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('gender')
+                .setDescription('Enter your gender')
+                .setRequired(true)),
 
 module.exports = {
     async execute(interaction) {
