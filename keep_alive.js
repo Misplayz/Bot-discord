@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 // สร้างเซิร์ฟเวอร์
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.write("I'm alive");
+  res.write("Now I'm alive");
   res.end();
 });
 
