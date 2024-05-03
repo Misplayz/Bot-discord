@@ -19,7 +19,7 @@ module.exports = {
 
     async execute(interaction) {
         // ตรวจสอบว่าบอทอยู่ในห้องที่ต้องการหรือไม่
-            if (interaction.channel.name !== '👤-𝕀𝕟𝕥𝕣𝕠𝕕𝕦𝕔𝕖') {
+            if (interaction.channel.id !== "1152979349461553182") {
                 await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
                     return;
                  }
