@@ -81,7 +81,7 @@ module.exports = {
             
                 // ส่ง Embed ที่ถูกอัพเดตแล้ว และลบปุ่ม
                 await interaction.deleteReply();
-                const targetChannel = interaction.guild.channels.cache.get('1152979594337599579');
+                const targetChannel = interaction.guild.channels.cache.get('1152979349461553182');
                 if (targetChannel) {
                     await targetChannel.send({ content: messageContent, embeds: [indEmbed] });
 
