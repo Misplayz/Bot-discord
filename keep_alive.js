@@ -1,7 +1,7 @@
 const http = require('http');
 
 // กำหนดพอร์ตที่เซิร์ฟเวอร์จะใช้งาน
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // สร้างเซิร์ฟเวอร์
 const server = http.createServer((req, res) => {
