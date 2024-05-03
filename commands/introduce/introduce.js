@@ -17,7 +17,6 @@ module.exports = {
                 .setDescription('Enter your gender')
                 .setRequired(true)),
 
-module.exports = {
     async execute(interaction) {
         // Check if the interaction is in the correct channel
         if (interaction.channel.name !== '👤-introduce') {
