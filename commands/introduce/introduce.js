@@ -19,7 +19,7 @@ module.exports = {
 
     async execute(interaction) {
         // Check if the interaction is in the correct channel
-        if (interaction.channel.name !== '👤-𝕚𝕟𝕥𝕣𝕠𝕕𝕦𝕔𝕖') {
+        if (interaction.channel.name !== '👤-introduce') {
             await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
             return;
         }
