@@ -1,4 +1,4 @@
-const { Client, MessageEmbed, SlashCommandBuilder } = require('discord.js');
+const { MessageEmbed, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
