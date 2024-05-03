@@ -1,4 +1,4 @@
-const { Client, MessageEmbed, SlashCommandBuilder, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, MessageEmbed, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,18 +31,24 @@ module.exports = {
 
         const messageContent = `Please confirm your introduction by clicking one of the buttons below.`;
 
-        const confirmButton = new MessageButton()
-            .setCustomId('confirm')
-            .setLabel('Confirm')
-            .setStyle('SUCCESS');
+        const confirmButton = {
+            customId: 'confirm',
+            label: 'Confirm',
+            style: 'SUCCESS'
+        };
 
-        const cancelButton = new MessageButton()
-            .setCustomId('cancel')
-            .setLabel('Cancel')
-            .setStyle('SECONDARY');
+        const cancelButton = {
+            customId: 'cancel',
+            label: 'Cancel',
+            style: 'SECONDARY'
+        };
 
-        const row = new MessageActionRow()
-            .addComponents(cancelButton, confirmButton);
+        const components = [
+            {
+                type: 'ACTION_ROW',
+                components: [confirmButton, cancelButton]
+            }
+        ];
 
         const embed = new MessageEmbed()
             .setTitle(`Please confirm your introduction`)
@@ -55,7 +61,7 @@ module.exports = {
             .setThumbnail(interaction.user.avatarURL({ dynamic: true }))
             .setTimestamp();
 
-        const initialMessage = await interaction.reply({ content: messageContent, embeds: [embed], components: [row], ephemeral: true });
+        const initialMessage = await interaction.reply({ content: messageContent, embeds: [embed], components: components, ephemeral: true });
 
         const filter = (i) => i.isButton() && (i.customId === 'confirm' || i.customId === 'cancel');
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
