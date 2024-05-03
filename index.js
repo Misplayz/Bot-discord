@@ -1,19 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const deployCommands = require('./deploy-commands'); // เปลี่ยนชื่อตัวแปรเป็น deployCommands
+const deployCommands = require('./deploy-commands'); // Changed variable name to deployCommands
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
-const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
+const commandsPath = path.join(__dirname, 'commands');
 
-for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+// Function to load commands
+const loadCommands = (dir) => {
+    const commandFiles = fs.readdirSync(dir).filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
+        const filePath = path.join(dir, file);
         const command = require(filePath);
         if ('data' in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
@@ -21,29 +20,31 @@ for (const folder of commandFolders) {
             console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
         }
     }
-}
+};
 
+// Load commands from all command folders
+fs.readdirSync(commandsPath).forEach(folder => {
+    loadCommands(path.join(commandsPath, folder));
+});
+
+// Load events
 const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-
-for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
+fs.readdirSync(eventsPath).forEach(file => {
+    const event = require(path.join(eventsPath, file));
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args));
     } else {
         client.on(event.name, (...args) => event.execute(...args));
     }
-}
+});
 
+// Deploy commands and login
 (async () => {
     try {
-        await deployCommands(); // ใช้ deployCommands โดยไม่มีวงเล็บ ()
+        await deployCommands(); // Call deployCommands without parentheses ()
 
         await client.login(process.env.token);
     } catch (error) {
         console.error('Error:', error);
     }
 })();
-
-client.login(process.env.token);
