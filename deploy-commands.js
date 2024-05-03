@@ -1,7 +1,7 @@
 // deploy-commands.js
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId } = require('./config.json');
-const { token } = require(process.env.token)
+const token = process.env.token;
 const fs = require('fs');
 const path = require('path');
 
