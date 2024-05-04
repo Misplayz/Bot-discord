@@ -1,4 +1,4 @@
-const { Client, EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+-const { Client, EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -87,10 +87,10 @@ module.exports = {
 
                     // เพิ่มบทบาทใหม่และลบบทบาทเก่า
                     const member = await interaction.guild.members.fetch(interaction.user);
-                    const newRole = interaction.guild.roles.cache.find(role => role.name === 'Family-Member');
-                    //const oldRole = interaction.guild.roles.cache.find(role => role.name === 'OLD_ROLE_NAME');
+                    const newRole = interaction.guild.roles.cache.get('1188480440223420548');
+                    const oldRole = interaction.guild.roles.cache.get('1236279675869986888');
                     if (newRole) await member.roles.add(newRole);
-                    //if (oldRole) await member.roles.remove(oldRole);
+                    if (oldRole) await member.roles.remove(oldRole);
                 } else {
                     console.log('Target channel not found.');
                 }
