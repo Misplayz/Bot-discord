@@ -22,7 +22,7 @@ server.on('request', async (req, res) => {
   if (req.method === 'GET' && req.url === '/sendRequest') {
     try {
       // ส่งคำขอ GET ไปยังเซิร์ฟเวอร์อื่น
-      const response = await axios.get('http://example.com/api/data');
+      const response = await axios.get('https://misplayz-github-io.onrender.com');
       // ส่งข้อมูลกลับไปยังผู้ใช้
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(response.data));
