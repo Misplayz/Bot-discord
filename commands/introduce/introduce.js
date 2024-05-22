@@ -18,50 +18,50 @@ module.exports = {
             .setRequired(true)),
 
     async execute(interaction) {
-        // ตรวจสอบว่าบอทอยู่ในห้องที่ต้องการหรือไม่
-            if (interaction.channel.id !== "1152979349461553182") {
-                await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
-                    return;
-                 }
+        // Check if the bot is in the correct channel
+        if (interaction.channelId !== '1152979349461553182') {
+            await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
+            return;
+        }
+        
+        const userNickname = interaction.options.getString('nickname');
+        const userAge = interaction.options.getString('age');
+        const userGender = interaction.options.getString('gender');
+        
+        // Tag the user in text format
+        const taggedUser = interaction.user.toString();
+        
+        const messageContent = `Please confirm your introduction by clicking one of the buttons below.`;
+        
+        const confirm = new ButtonBuilder()
+            .setCustomId('confirm')
+            .setLabel('Confirm')
+            .setStyle(ButtonStyle.Success);
             
-            const userNickname = interaction.options.getString('nickname');
-            const userAge = interaction.options.getString('age');
-            const userGender = interaction.options.getString('gender');
+        const cancel = new ButtonBuilder()
+            .setCustomId('cancel')
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Secondary);
             
-            // แท็กผู้ใช้ในรูปแบบข้อความ
-            const taggedUser = interaction.user.toString();
+        const row = new ActionRowBuilder()
+            .addComponents(cancel, confirm);
             
-            const messageContent = `Please confirm your introduction by clicking one of the buttons below.`;
+        // Create Embed
+        const embed = new EmbedBuilder()
+            .setTitle(`Please confirm your introduction`)
+            .setColor('#00FFFF')
+            .addFields(
+                { name: 'Nickname', value: userNickname},
+                { name: 'Age', value: userAge},
+                { name: 'Gender', value: userGender}
+            )
+            .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // Update here
+            .setTimestamp();
             
-            const confirm = new ButtonBuilder()
-                .setCustomId('confirm')
-                .setLabel('Confirm')
-                .setStyle(ButtonStyle.Success);
-                
-            const cancel = new ButtonBuilder()
-                .setCustomId('cancel')
-                .setLabel('Cancel')
-                .setStyle(ButtonStyle.Secondary);
-                
-            const row = new ActionRowBuilder()
-                .addComponents(cancel, confirm);
-                
-            // สร้าง Embed
-            const embed = new EmbedBuilder()
-                .setTitle(`Please confirm your introduction`)
-                .setColor('#00FFFF')
-                .addFields(
-                    { name: 'Nickname', value: userNickname},
-                    { name: 'Age', value: userAge},
-                    { name: 'Gender', value: userGender}
-                )
-                .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // แก้ไขที่นี่
-                .setTimestamp();
-                
-            // ส่งข้อความและ Embed พร้อมกัน
+        // Send message and Embed together
         const initialMessage = await interaction.reply({ content: messageContent, embeds: [embed], components: [row], ephemeral: true });
 
-        // กำหนดเวลาในการรอการยืนยัน
+        // Set timeout for confirmation
         const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60_000 });
 
@@ -70,7 +70,7 @@ module.exports = {
                 const messageContent = `${taggedUser}`;
                 const indEmbed = new EmbedBuilder()
                     .setTitle(`Introduce by ${interaction.user.tag} has been confirmed.`)
-                    .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // แก้ไขที่นี่
+                    .setThumbnail(interaction.user.avatarURL({ dynamic: true })) // Update here
                     .setColor('#00FFFF')
                     .addFields(
                         { name: 'Nickname', value: userNickname},
@@ -79,16 +79,17 @@ module.exports = {
                     )
                     .setTimestamp();
             
-                // ส่ง Embed ที่ถูกอัพเดตแล้ว และลบปุ่ม
+                // Send updated Embed and delete buttons
                 await interaction.deleteReply();
                 const targetChannel = interaction.guild.channels.cache.get('1152979594337599579');
                 if (targetChannel) {
                     await targetChannel.send({ content: messageContent, embeds: [indEmbed] });
 
-                    // เพิ่มบทบาทใหม่และลบบทบาทเก่า
+                    // Add new role and remove old role
                     const member = await interaction.guild.members.fetch(interaction.user);
                     const newRole = interaction.guild.roles.cache.get('1188480440223420548');
                     const oldRole = interaction.guild.roles.cache.get('1236279675869986888');
+                    
                     if (newRole) await member.roles.add(newRole);
                     if (oldRole) await member.roles.remove(oldRole);
                 } else {
