@@ -18,12 +18,6 @@ module.exports = {
             .setRequired(true)),
 
     async execute(interaction) {
-        // Check if the bot is in the correct channel
-        if (interaction.channelId !== '1152979349461553182') {
-            await interaction.reply({ content: 'You cannot use this command in this channel.', ephemeral: true });
-            return;
-        }
-        
         const userNickname = interaction.options.getString('nickname');
         const userAge = interaction.options.getString('age');
         const userGender = interaction.options.getString('gender');
@@ -63,7 +57,7 @@ module.exports = {
 
         // Set timeout for confirmation
         const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
-        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60_000 });
+        const collector = initialMessage.createMessageComponentCollector({ filter, time: 60_000 });
 
         collector.on('collect', async i => {
             if (i.customId === 'confirm') {
@@ -80,21 +74,21 @@ module.exports = {
                     .setTimestamp();
             
                 // Send updated Embed and delete buttons
-                await interaction.deleteReply();
+                await initialMessage.delete();
                 const targetChannel = interaction.guild.channels.cache.get('1152979594337599579');
                 if (targetChannel) {
                     await targetChannel.send({ content: messageContent, embeds: [indEmbed] });
-
-                    // Add new role and remove old role
-                    const member = await interaction.guild.members.fetch(interaction.user);
-                    const newRole = interaction.guild.roles.cache.get('1188480440223420548');
-                    const oldRole = interaction.guild.roles.cache.get('1236279675869986888');
-                    
-                    if (newRole) await member.roles.add(newRole);
-                    if (oldRole) await member.roles.remove(oldRole);
                 } else {
                     console.log('Target channel not found.');
                 }
+
+                // Add new role and remove old role
+                const member = await interaction.guild.members.fetch(interaction.user);
+                const newRole = interaction.guild.roles.cache.get('1188480440223420548');
+                const oldRole = interaction.guild.roles.cache.get('1236279675869986888');
+                
+                if (newRole) await member.roles.add(newRole);
+                if (oldRole) await member.roles.remove(oldRole);
             } else if (i.customId === 'cancel') {
                 await i.update({ content: 'Introduction cancelled.', embeds: [], components: [] });
             }
